@@ -16,5 +16,6 @@ namespace TEST_API
         }
 
         public DbSet<AxaProvider> axaProviders { get; set; }
+        public DbSet<UserQuery> userQueries { get; set; }
     }
 }
