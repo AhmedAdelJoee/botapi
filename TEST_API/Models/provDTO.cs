@@ -13,5 +13,6 @@ namespace TEST_API.Models
     {
         //public List<string> text { get; set; }
         public string text { get; set; }
+
     }
 }

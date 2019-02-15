@@ -94,33 +94,57 @@ namespace TEST_API.Controllers.api
 
 
 
-        [Route("api/postquery")]
+        [Route("api/postquery/{lat}/{longi}/{userid}")]
         [HttpPost]
-        public IHttpActionResult postshit(LongLat x)
+        public IHttpActionResult postshit(decimal lat,decimal longi, string userid)
         {
+            //UserQuery oo = new UserQuery();
+            //oo.latitude = x.lat;
+            //oo.longitude = x.lon;
+            //oo.Count = "2";
+            //oo.MessengerUserID = "2";
+            //_ctx.userQueries.Add(oo);
+            //_ctx.SaveChanges();
+            //return Ok();
+            //var x = lat.
             UserQuery oo = new UserQuery();
-            oo.latitude = x.lat;
-            oo.longitude = x.lon;
-            oo.Count = "2";
-            oo.MessengerUserID = "2";
+            oo.latitude = lat.ToString();
+            oo.longitude = longi.ToString();
+            oo.Count = "1";
+            oo.MessengerUserID = userid;
             _ctx.userQueries.Add(oo);
             _ctx.SaveChanges();
             return Ok();
         }
 
-        [Route("api/testfn/{longi}/{lat}/{cardcolor}/{type}")]
+        [Route("api/testfn/{longitude}/{latitude}/{cardColor}/{typeOfService}")]
         [HttpGet]
-        public IHttpActionResult test (decimal longi, decimal lat, string cardcolor, string type )
+        public IHttpActionResult test (decimal longitude, decimal latitude, string cardColor, string typeOfService)
         {
-            var axalistnotfiltered = _ctx.axaProviders.Select(w => new { w.Longtude, w.Latitude, w.Provider, w.NetworkName, w.Type, w.Address, w.Phone, w.LocationOnMap }).Where(s => s.NetworkName.Contains(cardcolor) && s.Type.Contains(type)).ToList();
+            var axalistnotfiltered = _ctx.axaProviders.Select(w => new { w.Longtude, w.Latitude, w.Provider, w.NetworkName, w.Type, w.Address, w.Phone, w.LocationOnMap }).Where(s => s.NetworkName.Contains(cardColor) && s.Type.Contains(typeOfService)).ToList();
+
+            if (cardColor.Contains("Green"))
+            {
+                axalistnotfiltered = _ctx.axaProviders.Select(w => new { w.Longtude, w.Latitude, w.Provider, w.NetworkName, w.Type, w.Address, w.Phone, w.LocationOnMap }).Where(s => s.NetworkName.Contains(cardColor) && s.Type.Contains(typeOfService)).ToList();
+            }
+            else if (cardColor.Contains("Silver"))
+            {
+                axalistnotfiltered = _ctx.axaProviders.Select(w => new { w.Longtude, w.Latitude, w.Provider, w.NetworkName, w.Type, w.Address, w.Phone, w.LocationOnMap })
+                    .Where(s => s.NetworkName.Contains(cardColor) || s.NetworkName.Contains("Green") && s.Type.Contains(typeOfService)).ToList();
+            }
+            else
+                axalistnotfiltered = _ctx.axaProviders.Select(w => new { w.Longtude, w.Latitude, w.Provider, w.NetworkName, w.Type, w.Address, w.Phone, w.LocationOnMap })
+                    .Where(s => s.NetworkName.Contains(cardColor) || s.NetworkName.Contains("Silver") || s.NetworkName.Contains("Green")
+                    && s.Type.Contains(typeOfService)).ToList();
+
             //List<string> test_long = new List<string>();
             //List<string> test_lat = new List<string>();
             //List<Tuple<string, string>> xx = new List<Tuple<string, string>>();
             //Dictionary<string, string> dic = new Dictionary<string, string>();
             //decimal lon = decimal.Parse(longi);
             //decimal lati = decimal.Parse(lat);
-            decimal lon = longi;
-            decimal lati = lat;
+            decimal lon = longitude;
+            decimal lati = latitude;
             List<KeyValuePair<decimal, decimal>> dict = new List<KeyValuePair<decimal, decimal>>();
             List<decimal> euclidian = new List<decimal>();
             int c = 0;
@@ -178,16 +202,16 @@ namespace TEST_API.Controllers.api
             return Ok(wx);
         }
 
-        [Route("api/test/{longi}")]
+        [Route("api/test/{longitude}/{latitude}/{typeOfService}/{cardColor}")]
         [HttpGet]
-        public IHttpActionResult test2(float longi)
+        public IHttpActionResult test2(string longitude, string latitude, string typeOfService, string cardColor)
         {
             List<messages> qwe = new List<messages>();
             //foreach (var axa in providerList)
             {
                 messages qw = new messages();
 
-                qw.text = "This is echo: " + longi;
+                qw.text = "This is echo: " + longitude + " , "+ latitude + " , " +typeOfService +" , "+cardColor;
                 qwe.Add(qw);
 
             }
